@@ -1,934 +1,611 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+public class Cart extends JFrame {
+    String[] beauty={"Flour",
+            "Milo","Eggs","Soy Sauce",
+            "Nescafe","Dairy Milk Choclate Bar","Milk",
+            "Yogurt","Cooking Oil"};
+
+    Double[] beautyPrice={5.40,6.20,13.20,4.50,10.00,6.60,7.20,3.80,12.00};
+
+    ArrayList<ItemInformation> carts = new ArrayList<>();
+
+    Cart(Customer customer,ArrayList<ItemInformation> carts){
+        JLabel jlCarts = new JLabel("Your Carts");
+        JPanel panelNorth = new JPanel();
+        JPanel panelSouth = new JPanel();
+        jlCarts.setFont(new Font("MV Boli", Font.BOLD, 25));
+        jlCarts.setForeground(Color.BLUE);
+        JButton jbtConfirmPayment=new JButton("Make Payment");
+        JButton jbtCancel=new JButton("Cancel");
+        JPanel panelSubwindow = new JPanel();
+
+
+        panelNorth.add(jlCarts);
+
+        JLabel id = new JLabel("Item ID");
+        JLabel name = new JLabel("Item Name");
+        JLabel price = new JLabel("Item Price");
+        JLabel qty = new JLabel("Quantity");
+
+        panelSubwindow.add(id);
+        panelSubwindow.add(name);
+        panelSubwindow.add(price);
+        panelSubwindow.add(qty);
+
+        id.setHorizontalAlignment(SwingConstants.CENTER);
+        name.setHorizontalAlignment(SwingConstants.CENTER);
+        price.setHorizontalAlignment(SwingConstants.CENTER);
+        qty.setHorizontalAlignment(SwingConstants.CENTER);
+
+        id.setFont(new Font("Verdana", Font.BOLD, 15));
+        name.setFont(new Font("Verdana", Font.BOLD, 15));
+        price.setFont(new Font("Verdana", Font.BOLD, 15));
+        qty.setFont(new Font("Verdana", Font.BOLD, 15));
+
+
+        id.setForeground(Color.orange);
+        name.setForeground(Color.orange);
+        price.setForeground(Color.orange);
+        qty.setForeground(Color.orange);
+
+        JLabel jlID, jlName, jlPrice, jlQty;
+
+        for (ItemInformation itemInformation : carts) {
+            jlID = new JLabel(itemInformation.getItemId());
+            jlName = new JLabel(itemInformation.getItemName());
+            jlPrice = new JLabel(String.format("RM%.2f", itemInformation.getItemPrice()));
+            jlQty = new JLabel(String.valueOf(itemInformation.getQty()));
+            panelSubwindow.add(jlID);
+            panelSubwindow.add(jlName);
+            panelSubwindow.add(jlPrice);
+            panelSubwindow.add(jlQty);
+            jlID.setHorizontalAlignment(SwingConstants.CENTER);
+            jlName.setHorizontalAlignment(SwingConstants.CENTER);
+            jlPrice.setHorizontalAlignment(SwingConstants.CENTER);
+            jlQty.setHorizontalAlignment(SwingConstants.CENTER);
+        }
+
+
+        panelSubwindow.setLayout(new GridLayout(carts.size() + 1, 4));
+        panelSouth.add(jbtConfirmPayment);
+        panelSouth.add(jbtCancel);
+
+        jbtConfirmPayment.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new PaymentInterface(customer,carts);
+            }
+        });
+
+        add(panelSouth, BorderLayout.SOUTH);
+        add(panelNorth, BorderLayout.NORTH);
+        add(panelSubwindow, BorderLayout.CENTER);//Add subwindow to the mainframe and make it visible
+        setTitle("Customer Carts");
+        setVisible(true);
+        pack();
+        setLocationRelativeTo(null);
+    }
+}
+public class CustomerInformation {
+    String custId;
+    String custIC;
+    double CounterPaid;
+
+    public CustomerInformation(String custId, String custIC, double counterPaid) {
+        this.custId = custId;
+        this.custIC = custIC;
+        CounterPaid = counterPaid;
+    }
+
+    public String getCustId() {
+        return custId;
+    }
+
+    public void setCustId(String custId) {
+        this.custId = custId;
+    }
+
+    public String getCustIC() {
+        return custIC;
+    }
+
+    public void setCustIC(String custIC) {
+        this.custIC = custIC;
+    }
+
+    public double getCounterPaid() {
+        return CounterPaid;
+    }
+
+    public void setCounterPaid(double counterPaid) {
+        CounterPaid = counterPaid;
+    }
+}
+public class Customer {
+    private String name;
+    private String email;
+    private String phoneNo;
+
+    public String getPhoneNo() {
+        return phoneNo;
+    }
+
+    public void setPhoneNo(String phoneNo) {
+        this.phoneNo = phoneNo;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Customer(String name,String email, String phoneNo) {
+        this.name = name;
+        this.email = email;
+        this.phoneNo=phoneNo;
+    }
+}
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.LinkedList;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+public class CustomerLogin extends JFrame  {
+    LinkedList<Customer> customerList=new LinkedList<Customer>();
+    JLabel customerName = new JLabel("Customer Name");
+    JLabel customerPhoneNo = new JLabel("Phone No");
+    JLabel email = new JLabel("Email");
+    JTextField custNameField = new JTextField(25);
+    JTextField custPhoneNoField = new JTextField(25);
+    JTextField emailField = new JTextField(25);
+    JButton loginButton = new JButton("PURCHASE ORDER");
+    JButton resetButton = new JButton("RESET");
 
-/**
- *
- * @author  Muhammad Aiman Iskandar
- * @author  -
- * @version JDK 18
- * @since   28-06-2022
- */
-public class Cashier extends javax.swing.JFrame {
+    CustomerLogin() {
+        JPanel panelNorth = new JPanel();
+        JLabel label = new JLabel("~ Welcome To Hypermarket Self-Checkout Automated System ~");
+        label.setForeground(Color.red);//set font color of text
+        label.setFont(new Font("MV Boli", Font.BOLD, 25));//set font of text
+        panelNorth.add(label);
+        panelNorth.add(new JLabel(""));
+        add(panelNorth, BorderLayout.NORTH);
 
-    /**
-     * Creates new form Cashier
-     */
-    public Cashier() {
-        initComponents();
-    }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+        JPanel panelCenter = new JPanel(new GridLayout(3, 2));
+        panelCenter.add(customerName);
+        panelCenter.add(custNameField);
+        panelCenter.add(email);
+        panelCenter.add(emailField);
+        panelCenter.add(customerPhoneNo);
+        panelCenter.add(custPhoneNoField);
+        add(panelCenter, BorderLayout.CENTER);
 
-        basePanel = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
-        jButton0 = new javax.swing.JButton();
-        jButtonPeriod = new javax.swing.JButton();
-        jButtonCancel = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        jButtonAdd = new javax.swing.JButton();
-        jButtonEdit = new javax.swing.JButton();
-        jButtonDelete = new javax.swing.JButton();
-        jLabelProductName = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabelQuantity = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jLabel4 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
-        jLabelSubTotal = new javax.swing.JLabel();
-        jTextFieldSubTotal = new javax.swing.JTextField();
-        jLabelTotal = new javax.swing.JLabel();
-        jTextFieldTotal = new javax.swing.JTextField();
-        jPanel5 = new javax.swing.JPanel();
-        jLabelPaymentMethod = new javax.swing.JLabel();
-        jLabelCash = new javax.swing.JLabel();
-        jTextFieldCash = new javax.swing.JTextField();
-        jLabelChange = new javax.swing.JLabel();
-        jTextFieldChange = new javax.swing.JTextField();
-        jComboBoxPayment = new javax.swing.JComboBox<>();
-        jPanel6 = new javax.swing.JPanel();
-        jButtonPrint = new javax.swing.JButton();
-        jButtonReset = new javax.swing.JButton();
-        jButtonPay = new javax.swing.JButton();
-        jButtonRemove = new javax.swing.JButton();
-        jButtonExit = new javax.swing.JButton();
+        JPanel panelSouth = new JPanel();
+        panelSouth.add(loginButton);
+        panelSouth.add(resetButton);
+        add(panelSouth, BorderLayout.SOUTH);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1393, 730));
-
-        basePanel.setBackground(new java.awt.Color(126, 255, 182));
-        basePanel.setPreferredSize(new java.awt.Dimension(1400, 700));
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        jPanel1.setPreferredSize(new java.awt.Dimension(250, 500));
-
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jButton1.setText("1");
-        jButton1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jButton2.setText("2");
-        jButton2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jButton3.setText("3");
-        jButton3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        jButton4.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jButton4.setText("4");
-        jButton4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
-        jButton5.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jButton5.setText("5");
-        jButton5.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
-        jButton6.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jButton6.setText("6");
-        jButton6.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-
-        jButton7.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jButton7.setText("7");
-        jButton7.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-
-        jButton8.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jButton8.setText("8");
-        jButton8.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
-            }
-        });
-
-        jButton9.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jButton9.setText("9");
-        jButton9.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
-
-        jButton0.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jButton0.setText("0");
-        jButton0.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton0.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton0ActionPerformed(evt);
-            }
-        });
-
-        jButtonPeriod.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jButtonPeriod.setText(".");
-        jButtonPeriod.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonPeriod.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonPeriodActionPerformed(evt);
-            }
-        });
-
-        jButtonCancel.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jButtonCancel.setText("C");
-        jButtonCancel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCancelActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButtonPeriod, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jButton0, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(7, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton0, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonPeriod, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(87, Short.MAX_VALUE))
-        );
-
-        jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        jButtonAdd.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jButtonAdd.setText("ADD");
-        jButtonAdd.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAddActionPerformed(evt);
-            }
-        });
-
-        jButtonEdit.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jButtonEdit.setText("EDIT");
-        jButtonEdit.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonEdit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEditActionPerformed(evt);
-            }
-        });
-
-        jButtonDelete.setBackground(new java.awt.Color(255, 166, 166));
-        jButtonDelete.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jButtonDelete.setText("DELETE");
-        jButtonDelete.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonDeleteActionPerformed(evt);
-            }
-        });
-
-        jLabelProductName.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabelProductName.setText("Product Name :");
-
-        jTextField1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jTextField1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-
-        jLabelQuantity.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabelQuantity.setText("Quantity :");
-
-        jTextField2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jTextField2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel3.setText("Price (RM) :");
-
-        jTextField3.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jTextField3.setToolTipText("");
-        jTextField3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-
-        jComboBox1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Fishery & Meat", "Vegetables & Fruits", "Dairy", "Pets Food", "Essentials & Daily", "Laundry & House items" }));
-        jComboBox1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel4.setText("Category :");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabelQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabelProductName, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(jButtonAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jButtonEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jButtonDelete))
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(78, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelProductName, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jComboBox1)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Category", "Item", "Quantity", "Amount (RM)"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
-
-        jPanel3.setBackground(new java.awt.Color(217, 217, 217));
-        jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        jPanel4.setPreferredSize(new java.awt.Dimension(441, 200));
-
-        jLabelSubTotal.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabelSubTotal.setText("SUBTOTAL :");
-
-        jTextFieldSubTotal.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-
-        jLabelTotal.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabelTotal.setText("TOTAL :");
-
-        jTextFieldTotal.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabelSubTotal)
-                    .addComponent(jLabelTotal))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextFieldSubTotal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldTotal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextFieldSubTotal)
-                    .addComponent(jLabelSubTotal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelTotal)
-                    .addComponent(jTextFieldTotal))
-                .addGap(131, 131, 131))
-        );
-
-        jPanel5.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        jLabelPaymentMethod.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabelPaymentMethod.setText("PAYMENT METHOD :");
-
-        jLabelCash.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabelCash.setText("CASH :");
-        jLabelCash.setPreferredSize(new java.awt.Dimension(38, 32));
-
-        jTextFieldCash.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-
-        jLabelChange.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabelChange.setText("CHANGE :");
-        jLabelChange.setPreferredSize(new java.awt.Dimension(38, 32));
-
-        jTextFieldChange.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-
-        jComboBoxPayment.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jComboBoxPayment.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CASH", "CREDIT", "DEBIT", "QR" }));
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabelChange, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabelPaymentMethod, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabelCash, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextFieldChange)
-                    .addComponent(jTextFieldCash)
-                    .addComponent(jComboBoxPayment, 0, 200, Short.MAX_VALUE))
-                .addContainerGap(23, Short.MAX_VALUE))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabelPaymentMethod, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jComboBoxPayment))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextFieldCash)
-                    .addComponent(jLabelCash, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextFieldChange)
-                    .addComponent(jLabelChange, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(63, 63, 63))
-        );
-
-        jPanel6.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        jButtonPrint.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jButtonPrint.setText("PRINT");
-        jButtonPrint.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonPrint.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonPrintActionPerformed(evt);
-            }
-        });
-
-        jButtonReset.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jButtonReset.setText("RESET");
-        jButtonReset.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonReset.setPreferredSize(new java.awt.Dimension(81, 50));
-        jButtonReset.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonResetActionPerformed(evt);
-            }
-        });
-
-        jButtonPay.setBackground(new java.awt.Color(145, 164, 255));
-        jButtonPay.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jButtonPay.setText("PAY");
-        jButtonPay.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonPay.setPreferredSize(new java.awt.Dimension(81, 50));
-        jButtonPay.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonPayActionPerformed(evt);
-            }
-        });
-
-        jButtonRemove.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jButtonRemove.setText("REMOVE");
-        jButtonRemove.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonRemove.setPreferredSize(new java.awt.Dimension(81, 50));
-
-        jButtonExit.setBackground(new java.awt.Color(255, 166, 166));
-        jButtonExit.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jButtonExit.setText("EXIT / DONE");
-        jButtonExit.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButtonExit.setPreferredSize(new java.awt.Dimension(81, 50));
-        jButtonExit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonExitActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jButtonPrint, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonReset, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jButtonPay, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonPrint, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonReset, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonPay, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29)
-                .addComponent(jButtonExit, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15))
-        );
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout basePanelLayout = new javax.swing.GroupLayout(basePanel);
-        basePanel.setLayout(basePanelLayout);
-        basePanelLayout.setHorizontalGroup(
-            basePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(basePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(basePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(basePanelLayout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        basePanelLayout.setVerticalGroup(
-            basePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(basePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(basePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(12, 12, 12))
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(basePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1379, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(basePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE)
-        );
-
+        setLocationRelativeTo(null);
+        setVisible(true);
         pack();
-    }// </editor-fold>//GEN-END:initComponents
-//=====================Function Total====================
-    public void ItemCost() {
-        double sum = 0;
-        
-        for(int i = 0; i < jTable1.getRowCount(); i++) {
-            sum = sum + Double.parseDouble(jTable1.getValueAt(i, 3).toString());
-        }
-        
-        jTextFieldSubTotal.setText(Double.toString(sum));
-        double sTotal = Double.parseDouble(jTextFieldSubTotal.getText());
-                
-        String iTotal = String.format("RM %.2f", sTotal);
-        jTextFieldTotal.setText(iTotal);
-        jTextFieldSubTotal.setText(iTotal);
+        //setBounds(100,100,450,350);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setTitle("Supermarket Info Center");
+
+
+        loginButton.addActionListener(new LoginListener());
+        resetButton.addActionListener(new ResetListener());
+
+
     }
 
-//=====================Function change====================
-    public void Change() {
-        double sum = 0;
-        double cash = Double.parseDouble(jTextFieldCash.getText());
-        
-        for(int i = 0; i < jTable1.getRowCount(); i++) {
-            sum = sum + Double.parseDouble(jTextFieldTotal.getText());
+    public class LoginListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Customer customer=new Customer(custNameField.getText(),custPhoneNoField.getText(),emailField.getText());
+            customerList.add(customer);
+            new Menu(customer);
         }
-        
-        double cChange = (cash - sum);
-        
-        String ChangeGiven = String.format("RM %.2f" , cChange);
-        jTextFieldChange.setText(ChangeGiven);
     }
+
+    public class ResetListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            custNameField.setText("");
+            custPhoneNoField.setText("");
+            email.setText("");
+        }
+    }
+
+    public static void main(String[] a) {
+        CustomerLogin frame = new CustomerLogin();
+    }
+
+
+}
+
+import java.time.LocalDate;
+
+
+public class ItemInformation {
+    private String itemId;
+    private String itemName;
+    private Double itemPrice;
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
+    }
+
+    private int qty;
+    LocalDate datePurchase;
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public Double getItemPrice() {
+        return itemPrice;
+    }
+
+    public void setItemPrice(Double itemPrice) {
+        this.itemPrice = itemPrice;
+    }
+
+    public LocalDate getDatePurchase() {
+        return datePurchase;
+    }
+
+    public void setDatePurchase(LocalDate datePurchase) {
+        this.datePurchase = datePurchase;
+    }
+
+    public ItemInformation(String itemId, String itemName,int qty, Double itemPrice, LocalDate datePurchase) {
+        this.itemId = itemId;
+        this.itemName = itemName;
+        this.itemPrice = itemPrice;
+        this.datePurchase = datePurchase;
+        this.qty=qty;
+    }
+}
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Menu extends JFrame {
+    String[] beauty={"Flour",
+            "Milo","Eggs","Soy Sauce",
+            "Nescafe","Dairy Milk Choclate Bar","Milk",
+            "Yogurt","Coking Oil"};
+
+    Double[] beautyPrice={5.40,6.20,13.20,4.50,10.00,6.60,7.20,3.80,12.00,};
+
     
-//=====================Customer prompt============
-    public void ChangeCashier() {
-            JOptionPane.showMessageDialog(rootPane, "Item(s) that is less or equal than 5 must used express counter 2.");
+
+    Menu(Customer customer){
+        JPanel panelNorth=new JPanel();
+        JPanel panelSouth=new JPanel();
+        JLabel jlBeauty=new JLabel("Menu");
+        
+
+        JButton jbtPurchase=new JButton("Purchase");
+        JButton jbtCancel=new JButton("Cancel");
+
+        panelNorth.setLayout(new GridLayout(25,2));
+
+        panelNorth.add(jlBeauty);
+        jlBeauty.setFont(new Font("Verdana", Font.BOLD, 20));
+        jlBeauty.setForeground(Color.RED);
+        panelNorth.add(new JLabel(""));
+        panelNorth.add(new JLabel());
+        panelNorth.add(new JLabel());
+        for(int i=0;i<beauty.length;i++){
+            panelNorth.add(new JLabel(String.format("B%03d >> ",i+1)+beauty[i]));
+            panelNorth.add(new JLabel(String.format("RM%.2f",beautyPrice[i])));
+        }
+
+        panelNorth.add(new JLabel());
+        panelNorth.add(new JLabel());
+        panelNorth.add(new JLabel());
+        panelNorth.add(new JLabel());
+        panelNorth.add(new JLabel());       
+        add(panelNorth,BorderLayout.NORTH);
+        panelSouth.add(jbtPurchase);
+        panelSouth.add(jbtCancel);
+        add(panelSouth,BorderLayout.SOUTH);
+        setLocationRelativeTo(null);
+        setVisible(true);
+        setBounds(100,100,650,750);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setTitle("Supermarket Menu");
+        jbtPurchase.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Purchase purchase=new Purchase(customer);
+            }
+        });
     }
+
+}
+
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.time.LocalDate; // import the LocalDate class
+
+public class Purchase extends JFrame {
+    private JLabel jlTitle = new JLabel("Supermarket Purchase");
+    private JLabel jlProductCode = new JLabel("Enter Product Code : ");
+    private JTextField jtfCode = new JTextField();
+    private JLabel jlQty = new JLabel("Quantity");
+    private JTextField jtfQty = new JTextField();
+    private JButton jbtAddCart = new JButton("Add To Carts");
+    private JButton jbtCancel = new JButton("Cancel");
+    ArrayList<ItemInformation> carts = new ArrayList<>();
+
+    String[] beauty = {"Flour",
+            "Milo", "Eggs", "Soy Sauce",
+            "Nescafe", "Dairy Milk Choclate Bar", "Milk",
+            "Yogurt", "Cooking Oil" };
+
+    Double[] beautyPrice = {5.40, 6.20, 13.20, 4.50, 10.00, 6.60, 7.20, 3.80, 12.00};
+
     
-    /*public void Table() {
-        String prod = jTextField1.getText();
-        double Quant = Double.parseDouble(jTextField2.getText());
-        double pric = Double.parseDouble(jTextField3.getText());
-        
-        jTable1
-    }*/
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String EnterNumber = jTextFieldCash.getText();
-        
-        if(EnterNumber == "") {
-            jTextFieldCash.setText(jButton1.getText());
-        } else {
-            EnterNumber = jTextFieldCash.getText() + jButton1.getText();
-            jTextFieldCash.setText(EnterNumber);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        String EnterNumber = jTextFieldCash.getText();
-        
-        if(EnterNumber == "") {
-            jTextFieldCash.setText(jButton2.getText());
-        } else {
-            EnterNumber = jTextFieldCash.getText() + jButton2.getText();
-            jTextFieldCash.setText(EnterNumber);
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        String EnterNumber = jTextFieldCash.getText();
-        
-        if(EnterNumber == "") {
-            jTextFieldCash.setText(jButton3.getText());
-        } else {
-            EnterNumber = jTextFieldCash.getText() + jButton3.getText();
-            jTextFieldCash.setText(EnterNumber);
-        }
-    }//GEN-LAST:event_jButton3ActionPerformed
+    public Purchase(Customer customer) {
+        JPanel panelNorth = new JPanel();
+        panelNorth.setLayout(new GridLayout(4, 2));
+        panelNorth.add(jlTitle);
+        panelNorth.add(new JLabel());
+        panelNorth.add(new JLabel());
+        panelNorth.add(new JLabel());
+        jlTitle.setFont(new Font("Verdana", Font.BOLD, 20));
+        jlTitle.setForeground(Color.RED);
+        panelNorth.add(jlProductCode);
+        panelNorth.add(jtfCode);
+        panelNorth.add(jlQty);
+        panelNorth.add(jtfQty);
+        add(panelNorth, BorderLayout.NORTH);
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        String EnterNumber = jTextFieldCash.getText();
-        
-        if(EnterNumber == "") {
-            jTextFieldCash.setText(jButton4.getText());
-        } else {
-            EnterNumber = jTextFieldCash.getText() + jButton4.getText();
-            jTextFieldCash.setText(EnterNumber);
-        }
-    }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        String EnterNumber = jTextFieldCash.getText();
-        
-        if(EnterNumber == "") {
-            jTextFieldCash.setText(jButton5.getText());
-        } else {
-            EnterNumber = jTextFieldCash.getText() + jButton5.getText();
-            jTextFieldCash.setText(EnterNumber);
-        }
-    }//GEN-LAST:event_jButton5ActionPerformed
+        JPanel panelSouth = new JPanel();
+        panelSouth.add(jbtAddCart);
+        panelSouth.add(jbtCancel);
+        add(panelSouth, BorderLayout.SOUTH);
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        String EnterNumber = jTextFieldCash.getText();
-        
-        if(EnterNumber == "") {
-            jTextFieldCash.setText(jButton6.getText());
-        } else {
-            EnterNumber = jTextFieldCash.getText() + jButton6.getText();
-            jTextFieldCash.setText(EnterNumber);
-        }
-    }//GEN-LAST:event_jButton6ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        String EnterNumber = jTextFieldCash.getText();
-        
-        if(EnterNumber == "") {
-            jTextFieldCash.setText(jButton7.getText());
-        } else {
-            EnterNumber = jTextFieldCash.getText() + jButton7.getText();
-            jTextFieldCash.setText(EnterNumber);
-        }
-    }//GEN-LAST:event_jButton7ActionPerformed
-
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        String EnterNumber = jTextFieldCash.getText();
-        
-        if(EnterNumber == "") {
-            jTextFieldCash.setText(jButton8.getText());
-        } else {
-            EnterNumber = jTextFieldCash.getText() + jButton8.getText();
-            jTextFieldCash.setText(EnterNumber);
-        }
-    }//GEN-LAST:event_jButton8ActionPerformed
-
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        String EnterNumber = jTextFieldCash.getText();
-        
-        if(EnterNumber == "") {
-            jTextFieldCash.setText(jButton9.getText());
-        } else {
-            EnterNumber = jTextFieldCash.getText() + jButton9.getText();
-            jTextFieldCash.setText(EnterNumber);
-        }
-    }//GEN-LAST:event_jButton9ActionPerformed
-
-    private void jButton0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton0ActionPerformed
-        String EnterNumber = jTextFieldCash.getText();
-        
-        if(EnterNumber == "") {
-            jTextFieldCash.setText(jButton0.getText());
-        } else {
-            EnterNumber = jTextFieldCash.getText() + jButton0.getText();
-            jTextFieldCash.setText(EnterNumber);
-        }
-    }//GEN-LAST:event_jButton0ActionPerformed
-
-    private void jButtonPeriodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPeriodActionPerformed
-        if(! jTextFieldCash.getText().contains(".")) {
-            jTextFieldCash.setText(jTextFieldCash.getText() + jButtonPeriod.getText());
-        }
-    }//GEN-LAST:event_jButtonPeriodActionPerformed
-
-    private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
-        jTextFieldCash.setText("");
-        jTextFieldChange.setText("");
-    }//GEN-LAST:event_jButtonCancelActionPerformed
-
-    private void jButtonExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExitActionPerformed
-        JOptionPane.showMessageDialog(rootPane, "Thank you for using our service!");
-        System.exit(0);
-    }//GEN-LAST:event_jButtonExitActionPerformed
-
-    private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
-        String data1 = jTextField1.getText();
-        double data2 = Double.parseDouble(jTextField2.getText());
-        double data3 = Double.parseDouble(jTextField3.getText());
-        String data4 = (String) jComboBox1.getSelectedItem();
-        
-        Object[] row = {data4, data1, data2, data3};
-        
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        
-        model.addRow(row);
-        jTextField1.setText("");
-        jTextField2.setText("");
-        jTextField3.setText("");
-        ItemCost();
-    }//GEN-LAST:event_jButtonAddActionPerformed
-
-    private void jButtonEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonEditActionPerformed
-
-    private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonDeleteActionPerformed
-
-    private void jButtonPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrintActionPerformed
-        
-    }//GEN-LAST:event_jButtonPrintActionPerformed
-
-    private void jButtonResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonResetActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonResetActionPerformed
-
-    private void jButtonPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPayActionPerformed
-        if(jTable1.getRowCount() <= 5) {
-            ChangeCashier();
-        } if(jComboBoxPayment.getSelectedItem().equals("CASH")) {
-            Change();
-        } if(jComboBoxPayment.getSelectedItem().equals("DEBIT")) {
-            JOptionPane.showMessageDialog(rootPane, "This service is currently offline and unavailable, please choose another.");
-        } if(jComboBoxPayment.getSelectedItem().equals("CREDIT")) {
-            JOptionPane.showMessageDialog(rootPane, "This service is currently offline and unavailable, please choose another.");
-        } else {
-            jTextFieldChange.setText("");
-        }
-    }//GEN-LAST:event_jButtonPayActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+        jbtAddCart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean checkValidCode = false;
+                for (int i = 0; i < 10; i++) {
+                    if (jtfCode.getText().equals(String.format("B%03d", i + 1))) {
+                        checkValidCode = true;
+                        break;
+                    }
+                    if (jtfCode.getText().equals(String.format("S%03d", i + 1))) {
+                        checkValidCode = true;
+                        break;
+                    }
+                }
+                boolean checkInt = false;
+                //Validation
+                try {
+                    int qty = Integer.parseInt(jtfQty.getText());
+                    checkInt = true;
+                } catch (Exception exception) {
+                    checkInt = false;
+                }
+                if (jtfQty.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Please enter quantity");
+                }
+                if (checkValidCode == false) {
+                    JOptionPane.showMessageDialog(null, "Invalid Product Code !");
+                } else if (checkInt == false) {
+                    JOptionPane.showMessageDialog(null, "Invalid Quantity !");
+                } else {
+                    for (int i = 0; i < beauty.length; i++) {
+                        if (jtfCode.getText().equals(String.format("B%03d", i + 1))) {
+                            carts.add(new ItemInformation(jtfCode.getText(), beauty[i], Integer.parseInt(jtfQty.getText()), beautyPrice[i], LocalDate.now()));
+                        }
+                        
+                    }
+                    new Cart(customer, carts);
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Cashier.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Cashier.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Cashier.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Cashier.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Cashier().setVisible(true);
-            }
         });
+        setLocationRelativeTo(null);
+        setVisible(true);
+        pack();
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setTitle("Supermarket Info Center");
+    }
+}
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+public class PaymentInterface extends JFrame {
+
+    private JPanel panel = new JPanel();
+    private JRadioButton jrbCC = new JRadioButton("Cash");
+    private JRadioButton jrbDC = new JRadioButton("Debit Card");
+    private JRadioButton jrbOB = new JRadioButton("Online Banking");
+    private ButtonGroup buttonGroup = new ButtonGroup();//Allow one radio button selected
+
+    private JTextField jtfCusName=new JTextField();
+    private JTextField jtfTicketTotals=new JTextField();
+    private JTextField jtfTotalPrice=new JTextField();
+    private JTextField jtfBookingDate=new JTextField();
+
+    private JCheckBox jckAgree = new JCheckBox("Agree");
+    private JTextArea jTextArea = new JTextArea("These Terms and Conditions govern the relationship between you as a Customer ('Customer(s)')for providing you an access to purchase items \n" +
+            "By purchasing through counter or online transaction, you have unconditionally agreed to be legally bound by these Terms and Conditions that outlined, among other things,\n the refund, exchange and " +
+            "cancellation policy together with certain limitations of liability and disclaimers");
+
+    private JButton jbtSubmit = new JButton("Submit");
+    private JButton jbtCancel = new JButton("Cancel");
+
+
+    PaymentInterface(Customer customer, ArrayList<ItemInformation> carts) {
+        buttonGroup.add(jrbCC);
+        buttonGroup.add(jrbDC);
+        buttonGroup.add(jrbOB);
+
+        panel.setBorder(new TitledBorder("Payment Summary"));
+        panel.setLayout(new GridLayout(5,4));
+        panel.add(new JLabel("Customer Name"));
+        jtfCusName.setEditable(false);
+        jtfCusName.setText(customer.getName());
+        panel.add(jtfCusName);
+        panel.add(new JLabel(""));
+        panel.add(new JLabel(""));
+
+        panel.add(new JLabel("Total Ordered Purchase"));
+        int qty=0;
+        for(ItemInformation itemInformation:carts){
+            qty+=itemInformation.getQty();
+        }
+        jtfTicketTotals.setText(String.valueOf(qty));
+        jtfTicketTotals.setEditable(false);
+        panel.add(jtfTicketTotals);
+        panel.add(new JLabel(""));
+        panel.add(new JLabel(""));
+
+        //Count ticket price
+        double totalPrice=0;
+        for(ItemInformation cart:carts){
+            totalPrice+=cart.getItemPrice();
+        }
+        panel.add(new JLabel("Total Price"));
+        jtfTotalPrice.setText("RM "+String.format("%.2f",totalPrice*qty));
+        jtfTotalPrice.setEditable(false);
+        panel.add(jtfTotalPrice);
+        panel.add(new JLabel(""));
+        panel.add(new JLabel(""));
+
+        panel.add(new JLabel("Purchase Date"));
+        jtfBookingDate.setText(String.valueOf(carts.get(0).getDatePurchase()));
+        jtfBookingDate.setEditable(false);
+        panel.add(jtfBookingDate);
+        panel.add(new JLabel(""));
+        panel.add(new JLabel(""));
+
+
+        panel.add(new JLabel("Payment Method"));
+        panel.add(jrbCC);
+        panel.add(jrbDC);
+        panel.add(jrbOB);
+        add(panel, BorderLayout.NORTH);
+
+        JPanel panelCenter = new JPanel();
+        panelCenter.add(jckAgree);
+        panelCenter.add(jTextArea);
+        add(panelCenter, BorderLayout.CENTER);
+        jckAgree.addActionListener(new radioBtnListener());
+        jTextArea.setEditable(false);
+
+        JPanel panelSouth = new JPanel();
+        panelSouth.add(jbtSubmit);
+        panelSouth.add(jbtCancel);
+        
+
+        
+        
+        jbtSubmit.addActionListener(new ActionListener() {
+        @Override
+            public void actionPerformed(ActionEvent e) {
+                if ((jrbCC.isSelected() || jrbDC.isSelected() || jrbOB.isSelected()) && jckAgree.isSelected()) {
+                    int option = JOptionPane.showConfirmDialog(null, "Are you sure to confirm the payment ?");
+                    /*if (option == JOptionPane.YES_OPTION) {
+                        JOptionPane.showMessageDialog(null,"Counter 1","Thank you for purchase our orders !",JOptionPane.INFORMATION_MESSAGE);
+                    }*/
+                } else {
+                    JOptionPane.showMessageDialog(null,"Please select payment method and check the agree box");
+                }
+            }            
+        });
+
+
+        
+        add(panelSouth, BorderLayout.SOUTH);
+
+
+        setVisible(true);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setTitle("Payment Gateway");
+        pack();
+
+                 //counter set up
+        int counter=qty;
+        if(counter < 5)
+        {
+           JOptionPane.showMessageDialog(null,"Proceed to counter 1 or 2"); 
+        }
+        
+        else if(counter >= 5)
+        {
+            JOptionPane.showMessageDialog(null,"Proceed to counter 3"); 
+        }
+        
+        else 
+        {
+            JOptionPane.showMessageDialog(null,"Please select payment method and check the agree box");
+        }
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel basePanel;
-    private javax.swing.JButton jButton0;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
-    private javax.swing.JButton jButtonAdd;
-    private javax.swing.JButton jButtonCancel;
-    private javax.swing.JButton jButtonDelete;
-    private javax.swing.JButton jButtonEdit;
-    private javax.swing.JButton jButtonExit;
-    private javax.swing.JButton jButtonPay;
-    private javax.swing.JButton jButtonPeriod;
-    private javax.swing.JButton jButtonPrint;
-    private javax.swing.JButton jButtonRemove;
-    private javax.swing.JButton jButtonReset;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBoxPayment;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabelCash;
-    private javax.swing.JLabel jLabelChange;
-    private javax.swing.JLabel jLabelPaymentMethod;
-    private javax.swing.JLabel jLabelProductName;
-    private javax.swing.JLabel jLabelQuantity;
-    private javax.swing.JLabel jLabelSubTotal;
-    private javax.swing.JLabel jLabelTotal;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextFieldCash;
-    private javax.swing.JTextField jTextFieldChange;
-    private javax.swing.JTextField jTextFieldSubTotal;
-    private javax.swing.JTextField jTextFieldTotal;
-    // End of variables declaration//GEN-END:variables
+    public class radioBtnListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            if (jckAgree.isSelected()) {
+                JOptionPane.showMessageDialog(null, "Terms and conditions agreed");
+            }
+        }
+    }
+    
+
+
 }
